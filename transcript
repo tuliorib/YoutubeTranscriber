@@ -1,0 +1,707 @@
+Welcome to this crash course on
+best scripting. Throughout this course Herbert will teach you a
+wide range of topics, including basic commands, writing your
+first bash script, working with variables, mastering control
+structures, and diving into powerful text manipulation tools
+like awk and sed, Get ready to unlock the full potential of
+bash scripting and enhance your productivity by automating
+tasks, streamlining processes, and making your workflow more
+efficient. Hello, everyone, and welcome to this introduction
+course to bash shell scripting. This course is aimed at anyone
+who is new to shell scripting people who want to expand their
+knowledge or for those who want to refresh their knowledge. My
+name is Herbert and I will be your instructor for this course.
+I've been in the IT sector as a system engineer since 2009. I've
+dealt with multiple systems ranging from Windows Server to
+Linux servers, and in the last few years, I started
+specializing in automation and development. I've been doing
+YouTube content creation since 2017. Up until now, and I've
+already created a course on Linux, which might be a good
+starting point. If you're completely new to Linux, I want
+to learn more about the basics of the operating system itself. Now what is bash, bash is short
+for Bourne again, shell, it replaced the Bourne shell in the
+glue slash Linux project, which was the default shell for Unix
+operating systems. A shell is a user interface for ease of use,
+it makes it easy for the user to manage the operating system
+without knowing all of the inner workings and complexity of the
+operating system itself. Now why would you learn bash?
+Well, the reason you want to learn Bash is because it's
+currently the most popular shell scripting language for the Linux
+operating system. Bash has been around forever it has been used
+since the early days of Linux, and it has stood the test of
+time ever since. It's also included in Mac OS and in
+windows when you're using the Windows subsystem for Linux. Now, why would you not use bash?
+Well, even though Bash is considered a programming
+language, it obviously lacks some features. For example, the
+ability to do object oriented programming is not available in
+bash. Python would obviously be the preferred choice here if
+you're looking to create more advanced scripts that allow
+object oriented programming. Speaking of Python, bash is also
+more complex in its syntax. When comparing Python syntax to bash
+one could say that Bash is a lot harder to read and write. Not
+only Python is often a better choice for more advanced
+scripting. Newer tools like Ansible also make it a lot
+easier for you to manage multiple systems, which is a lot
+harder to do with bash. Of course, Ansible in Python are
+often overkill for simple scripts and using one does not
+exclude the other. Bash is often used in tandem with tools like
+Ansible, or integrated in Python scripts. This is exactly the
+reason why you should learn bash, just knowing the basics
+could mean a big difference in a lot of situations. Sometimes,
+the old trusty tools are still the most valuable. What will you
+need for this course, I aimed this course at the standard
+Windows user. So I built the course around the windows
+subsystem for Linux, aka WsL. Since we will be only using
+command line tools and no GUI WsL seems like the obvious
+choice. And I also have a video explaining how to install WsL on
+Windows. If you're running a true Linux distro, even better.
+If you're using a Mac, you can follow along in your terminal
+window. But first make sure that you have bash set as your
+preferred shell. small disclaimer basic Linux knowledge
+is required. If you're completely new to Linux, or even
+new to bash, I would suggest you at least follow along with the
+Linux guide that I have on my channel is going to give you a
+good basic understanding of how the Linux operating system
+works. Before we start with actual
+scripting, let's first do some basic commands in the terminal.
+Let's look at an example of two very simple commands to display
+text in the command line. The first one is called Echo, which
+will display the text you pass it as an argument. We will write
+the command echo and then we pass it some text like so we
+just type in Echo Hello. And so we can detect this by looking at
+Echo as the command and hello as the argument. We will learn more
+about arguments later in this course. In this case, we talk
+about a positional argument. Now we can see the output that
+says hello, which is the word we gave it as an argument. Let's try and see how another
+command the cat command compares to this. The cat command
+displays the contents of a file. But right now we don't have one.
+So let's first create a file with our text editor Vim. In
+this course, we're always going to be using vim because it's a
+good text editor that comes with almost all Linux distributions.
+Plus, it's actually not that hard to use if you get the hang
+of it. I myself have written multiple scripts in bash. In Python, with Vim, so it's
+definitely a good text editor unless you want to start writing
+some serious scripts or software. In that case, a decent
+GUI text editor like VS code, atom, or Sublime, or better
+options. Let's create a new file with
+them by typing vim text file. txt, and let's write something
+in it. To write something in Vim, press the I button, and you
+will enter the insert mode. From this mode, you can start
+writing text. Let's write hello world in this file, now we press
+the Escape button. And you will see that the insert mode is now
+gone, we have exited the insert mode and we're back into command
+mode. And once you're back into the regular command mode, you
+can press the colon W to write the file. And this will make
+sure the changes we made are actually done and saved to the
+disk. And then we can press Q to exit the file. Also, to make
+life simpler, we can go into Vim, make some changes and
+combine the colon W and call on Q to write colon wq. This will
+automatically write the file and quit vim at the same time. If you made any changes you
+don't want to save, you can ignore the changes by typing
+colon Q, exclamation mark, which will quit vim while ignoring any
+changes made. Now that we created our file,
+let's try to print the contents of the file with the cat
+command. This command will print out whatever's in the first
+positional argument, in our case is the name of the file we just
+created. So we just type in cat txt file a TXT, and we should
+see the contents of the file printed here. Okay, great. We
+can now print our own text and also text files to the terminal. This may not sound like much,
+but it's something that you will use a lot when writing bash
+scripts. So now finally, we are going to
+write a shell script with the knowledge we just gathered in
+the previous section. Start off by first opening your favorite
+text editor, and named the text file shell test.sh, like so. Vim
+space, shell test.sh. Now that we have our text editor
+opened, let's try another mode of writing text in Vim, the
+Append mode, instead of pressing i On your keyboard, press the A
+button. This will append your text rather than inserted. With
+the insert mode, you write the character before the cursor with
+the Append mode, you write the character after the cursor. Now
+in this case, it doesn't matter of course, because it's a new
+file, but I thought I would mention it anyways, since
+sometimes it can come in handy. Let's not start with our shell
+script. In Vim, write echo Hello World, and write and quit the
+file by pressing the insert or append mode, writing echo Hello
+World, and pressing the Escape button and then writing colon
+wq. Now let's see if we can actually find the file in here
+using the ls command, which will list all the files in our
+current directory. As you can see, the file is there and we
+can verify the location by looking at the terminals current
+location over here, which says the tilde symbol and the tilde
+symbol indicates that we are in our current home directory. By
+typing P WD. We can verify that we are indeed in the home
+directory. pwd stands for print working directory. And this way
+we can print the directory that we are currently working in,
+which is indeed our home directory. Now let's run our file by
+providing the command line with the command line interpreter. Which is bash space, shell
+test.sh. This will output the command we entered in the shell
+script using the bash interpreter. But when we type in
+Echo dollar sign shell, we can verify that we are actually
+running in a bash shell. So should we really have to specify
+it? Well, the short answer is yes. Just because we are running
+in a bash shell, that does not mean that Linux is going to
+assume every file we want to run is also in bash. We should
+always provide an interpreter for our shell scripts to use the
+correct type of shell. That does not mean however, that
+we shouldn't make it easier for ourselves. We can actually
+provide the command line interpreter in the shell script
+itself by typing it at the top of our script. In our case, we
+have to provide the full path to the shell interpreter. Let's
+copy our output from the echo dollar sign shell command and
+use it in our shell script. Copy the output by selecting it
+and using either Ctrl C or right clicking the selection either it
+should work. Now let's go back into our shell
+script and let's enter the insert mode. Since we want to
+enter all this information in the beginning of the file, press
+I am type in pound sign exclamation mark and then paste
+in the output of the echo Dollar Sign shell command. And
+what we do here is we provide the shebang. So the pound sign
+exclamation mark is a way of telling the shell script which
+interpreter to use, we follow up the shebang by providing the
+full path to the shell interpreter. And this way, the
+shell knows which type of shell interpreter it needs to use, we
+can now run this file doing period forward slash shell
+test.sh. But we will see that permission is denied and we need
+to give the file permission to be executed. This is because in
+Linux, we need to give files permission to act as an
+executable file. Let's have a look at this when we type in LS
+minus l, which is a long format of the ls command, which is
+another type of argument we call a flag. So the minus L here is
+called a flag we give as an argument to the ls command,
+we're actually asking the ls command to provide the long
+format, which will display some more information about the files
+and directories, we can see in our permissions that we do not
+have executable permissions yet, if you want to learn more about
+the basics of file permissions, you should look at my Linux for
+beginners tutorial. Let's give our file executable
+permissions by typing in ch, mo D or smart u plus x space shell
+test.sh. We want to provide u plus x because this will give
+only the owner user permission to execute the file rather than
+the entire group or anybody on the system. It's good to have this
+discipline baked into your head, although on a development
+environment, it doesn't really matter very much. Okay, now we can finally run our
+shell script by typing in period forward slash shell test.sh. And
+we will see the output on the terminal. Now that we finally
+have the basics out of the way, we can actually start writing
+some bash scripts. To understand a little bit
+better what variables do in bash, have a look at this
+script. So in this script, you have a classic example of a copy
+command where we copy something from to a location underneath
+that we have the same location paths twice typed out
+completely. Now, this is something that you want to avoid
+as much as you can. Underneath that we have a better option
+where we actually define a location path in a variable
+called my location from now this is quite a long variable name,
+you could actually just define something like loc underscore
+from, which would be better to make it a little bit shorter.
+But it's just you know, it's just for demonstration purposes
+how this would work. So you could understand if you would
+have a very long path here, we could have that very long file
+location stored in a variable. And then you could actually
+reuse that variable over and over again, like we did in the
+example below with that. So let's now have a look at how we
+can actually use this in an example. So we can either type
+our name like this first name equals, let's say Herbert. And
+that's how we can actually use these variables by typing like
+Echo Hello, and then typing the variable like so. So that's how
+it would work like in line or in the command line itself. But we
+could actually also just write a script to demonstrate a little
+bit better how variables work. So just type in Vim, hello,
+there.sh. And then we'll do the insert
+mode with the shebang forward slash bin forward slash bash.
+And then over here, we'll define our first name equals pervert or
+you know your name. And then last name, equals lindemans,
+which is my last name. And that will just do like this echo.
+Hello, dollar sign first name. And then we'll do dollar sign
+last name. And then we'll exits with wq.
+And now, the only thing we need to do is Srimad u plus x. Hello
+there.sh. And now we can run it. And now we can see that our name
+is printed out here. Just like that. So now we actually type this
+statically. But we can actually also ask the user for input,
+like so. So let's open a new shell script with Vim.
+Interactive shell.sh will do the same insert, they'll do the
+shebang bin bash. And first of all, we'll need to ask the user
+like, What is your name? So what is your name? What is your first
+name? Let's ask. And then we'll do a read statement. I will read
+the first name. I will do the same with what is your last name and I will read last name and I
+will echo Hello Oh, dollar sign first name, space dollar sign last name. And then we'll write and quit. And then we'll do the classic
+smart u plus x. And then interactive shell.sh. I will run
+it and now it's going to prompt us for our first name, or last
+name, and then it will just print out our first and last
+name back. So we could have the terminal
+display our own name, or anything else provided in a
+positional argument as well. But first, what is a positional
+argument? A positional argument is exactly what it sounds like,
+we place the argument at a certain position behind the
+command or script we want to run. The positional argument can
+be in position, 123, and so forth. The positions are always
+separated by a space. When working with positional
+arguments, you expect arguments to be in a certain position that
+is separated by a space and counting from one position zero
+is reserved for the shell itself. Now let's have a look at one of
+these positional arguments. Create a new script by typing
+vim pulse ru.sh. And enter the insert mode again, we will have
+the script taking our first and last name and position one and
+two and have it take these words as positional arguments. Let's
+just write our shebang and write our one line of code like so. shebang, Bin bash, Echo, hello.
+Dollar sign $1 sign two. Now save the file and close Vim,
+change our permissions. And let's run the script again with
+the positional arguments dot forward slash POS argue that sh,
+herbert lindemans, or whatever your name is here. And as you
+can see, we get the same output here with only one line of code. One of the most frequently used
+features in Bash is piping, it makes it very easy to perform a
+specific action on the output of the command. Let's say the
+output of a command is very long and you wish to filter something
+out. Piping is going to give you that option. Now how does piping
+work? Let's have a look at an example. Let's say we want to look at a
+specific directory. But we just want to filter out certain files
+or subdirectories. We could for example, use a command like
+this. So we type in LS minus L forward slash our directory. In
+this case, we're using the bin directory at forward slash user
+forward slash bin and then space and then we type the piping
+symbol SPACE grep, which is something that we use to filter
+out specific words and then we type in bash. And we'll see the
+output is just the bash binaries that we can see here. Rather
+than the entire bin directory. In this command, we forward the
+output of the ls command into the next command with the pipe
+symbol. This symbol represents a pipe and this is what we call
+piping. We literally sent the output from a command before the
+pipe symbol to the command behind the pipe symbol. grep is
+just an example there are many more commands that have very
+powerful potential when used with piping. When sending output to a file,
+we have to use different kinds of symbols than the pipe symbol.
+Instead, we use the greater than and double greater than symbols.
+These symbols will be used to send the output from a command
+to a file. This can have many potential use cases, the first
+thing that comes to mind is logging something from your
+script to a log file. And this is something that you'll
+definitely use in real life scenarios. Let's see how we can
+use these symbols. First, we catch the output of a simple
+echo command. Start by typing in Echo hello world greater than
+hello dot exe. This prints hello world into a file called hello
+dot txt. Notice that we put the command before the greater than
+symbol and the name of the text file after the greater than
+symbol. Now we can see if this work by typing in cat hello dot
+txt and we should see the output of the echo command in here. Now
+let's try something different here typing echo Good day to
+you. Greater than hello dot txt. And let's see what's the hello
+dot txt file by typing in cat hello dot txt. But what is this,
+the file was overwritten. We don't have our hello world
+anymore. This is because the greater than symbol always
+overwrites any existing file. What we need to have is a proper
+way to append text rather than overwrite it. This is where the
+double greater than symbol comes in. This will append any output
+to our destination file rather than overwrite it. Let's try it
+out. But first let's remove that original file with RM space
+hello dot txt. Then we use Echo hello world double greater than
+symbol hello dot txt We check if the contents are
+indeed correct with cat hello dot exe. And indeed, the text is
+there. And once we verified this, we sent another output to
+the file using the double greater than symbol and type in
+Echo Good day to you double greater than hello dot exe. And
+we once again verify this output with cat hello dot exe. And we
+should see both outputs here. Now imagine using this in
+combination with timestamps to see which command ran at which
+time and also some error handling. We're starting to
+collect the tools we need to write real script, we can also
+feed input into a command by reversing the greater than
+symbol, we can use the lesser than double lesser than or even
+triple lesser than symbol to get input from a file, multiple
+lines of text or a single string of text. Let's first look at the
+lesser than operator, which will get input from a txt file. We
+will use the word count command as an example here, because it's
+one of those commands that has a use case for these types of
+operators. Let's type in WC minus w hello dot exe to get the
+word count. But what happens here, we get a little more than
+we asked for as an output. The wc command, by default also
+shows the filename, which is not what we want. If we just want to
+get the number of words, we need to feed the wc command and input
+from the file with the lesser than operator rather than the
+file itself as a positional argument. This can be done like
+so WC minus w space lesser than space hello dot txt, and this
+way, we will redirect the file to the wc command. Rather than
+passing it as a positional argument to the command, we will
+now get to the second way of feeding data to a command with
+the double lesser than operator. This is a great way to supply
+multiple lines of text to a command. When we write the
+double lesser than operator, we will immediately follow it up
+with a word that will open and close the text we want to input.
+Basically, we tell the command line Hey, wait for this word,
+and then capture everything I wrote in between the first and
+second occurrence. Often people will write e o f, but you can
+write whatever you want. Let's have a look at how this would
+work. So we type in cat space, double lesser than symbol elf.
+Now we see that the command line waits for input. So we can keep
+writing lines of text here. And let's write some text creating a
+new line with the enter key we'll type in I will enter write
+some enter text here, enter. And now we close it with the first
+word we supply it and we type again e o f. And now we should
+see the text that we wrote here between the two e o f
+statements. Now last but not least, we can also supply single
+strings of text to the command line. This will be done with you
+guessed it the triple lesser than operator. Let's have a look
+at another example of the wc command we use. By default, wc
+will either read a file or a command output, but not actual
+strings supplied as positional arguments. We should feed the
+command either an entire file or the output of a file with one of
+the lesser than operator variations. Let's see how we can
+provide a string to this wc command. So we typing w c minus
+w again, space, triple lesser than symbol, and then we open
+with double quotes Hello, their word count. And then we close
+again with double quotes and we should see the word count
+printed here in the terminal. This is how we can feed a string
+into a command and take note that the string needs to be in
+between double quotes otherwise it will not work. In bash, we have a built in
+command called test that will take in a couple of arguments
+and show you if the expression is true or not. For example, we
+can ask a terminal to show us whether or not a string of text
+is equal to another. We can write test followed by the
+expression, but I prefer using square brackets. Let's see how
+that's done. So we just write open square brackets space. And
+this is important because you need the space in between Hello
+space, equal sign space again Hello, followed by another space
+and enclosing the square brackets. And this will show no
+output but when we do echo dollar sign question mark. We
+should see output zero here because the first string of text
+is equal to the second and that will give us a return value of
+$0 sign question mark returns the value of the exit code or
+the last executed command. We will learn more about exit codes
+later. For now it's enough to know that exit code zero means
+that the command was executed without any issues. Another
+example of this would be comparing numbers with each
+other. For example, again We open the square brackets
+space one equals zero space, we close the square brackets, and
+then we do echo dollar sign question mark. And this shows us
+that the values are not the same because we get a return code
+one. But we could also use a different operator here to make
+sure that the values are actually numerical. We could use
+the minus EQ operator for this. And we do this with opening
+square brackets, one minus EQ, one closing square brackets,
+Echo dollar sign question mark. This also shows us the same
+return value exit code zero, which means that the values do
+equate, though this will throw an error if you would use
+alphabetical characters instead of numerical ones. Now for some more powerful
+stuff, we can actually use these test expressions and perform an
+action on it. Let's have a look at this more closely with an
+actual script. Let's create a login script which will not
+really log us in but it will show us what is possible with
+these if Elif else statements. Create a new script called if
+Elif else.sh. Type in the shebang. Do F open the square brackets,
+dollar sign, open curly braces, one comma comma close curly
+braces and I'll explain to you what this means in just a second
+equals your username, close the square brackets, semicolon,
+then, and then we follow up what we actually want to do here. So
+we want to echo Oh, you're the boss here. Welcome. Then start a new line. lf open
+square brackets again, dollar sign, curly braces, one comma
+comma curly braces equals help. Close the square brackets,
+semicolon, then echo, just enter your user name data. Else. Echo.
+I don't know who you are, but you're not the boss of me. And
+then close it with FY. Now let me explain to you what we did
+here. So this script will take in a positional argument, which
+is a great way to test how the if statements will work. We start our if statements with
+an F followed by the test expression. Take note of the
+square brackets used in previous section, we test if the first
+positional argument is equal to the value we provide. Take note
+of the double comma and the curly braces. This is called a
+parameter expansion. And it will allow us to ignore upper and
+lower cases when comparing the two values. We then end the test
+operator with a semicolon. And we'll follow it up by then. And
+then beginning a new line. And on this line, we type what we
+actually want to do with set test expression. In this case,
+we just print something out to the console telling the user the
+script has recognized the user name and that he is indeed the
+boss of the system. We can also have a script check for multiple
+test expressions. We can define this with an elif statement.
+This stands for else if being that else if the previous
+statement wasn't true test if this is true. Again, start a new
+line. We defined a test expression that will test if the
+positional argument is help. And if it is, we display a message
+that shows us instructions on how to use the script. Being an
+easy script we want to state that it isn't so hard to use.
+Maybe a little rude, but it's all in good fun. Then if none of
+these statements are true, finally we have the else
+statement. This will perform an action if none of the if or Elif
+statements are true. We can display a message saying that
+the user name was not detected and that the system will not be
+bossed around by someone that does not have the correct
+username. Finally, to close our if
+statements we ended with FYI. This closes the entire block of
+if Elif else statements and is required. If Elif else statements are
+useful, but you won't use them very often if you want to check
+for multiple values. For these kinds of things. We use case
+statements. First of all, what is a case statement? Well, a
+case statement performs different actions depending on
+which case is true. This means that we can define multiple
+options, and if the option matches the case, we will
+perform an action bound to that option. Let's have a look at how
+this works in a real script. Let's try to recreate our
+previous exercise with a case statement instead of the if Elif
+else statements, create a new file with vim login.sh and type
+in the shebang. And then we start our case statement by
+typing in case space. Dollar sign and then ie variable expansion with the
+curly brackets, one comma, comma, space in and over here,
+we're going to do something special, we're going to define
+multiple options. Now this is something that you could also do
+with if statements. But I'm just introducing it here with the
+case statements. Since I thought it would be interesting to see
+how it works. So we type in our username, space, and then the
+pipe symbol. And over here, this is actually like a separator for
+multiple options, rather than the pipe symbol that we saw
+earlier, to pipe things through two different commands. In a
+case statement, it serves a different function over here, it
+serves as a separator for multiple options. So user name,
+space, pipe, symbol, space, and then another user name, for
+example, the administrator, and then we close the bracket. And
+then we define what we want to say or do here. So you want to
+say something like, Oh, you're the boss here, welcome, again,
+like we did in the previous exercise, and then we close this
+option with double semicolons. Then we define another option
+here, for example, help like we did in the previous exercise
+will copy the same echo command that we close that option with
+double semi colons. And then what we do here is we define
+this star symbol or asterisk or whatever you want to call it.
+This is the catch all option that we're going to define. And
+the catch all option is like the default option, when none of the
+options are true, or when no options are given. And then we
+define Hello there, but you're not the boss of me, please enter
+a valid username, then we close that option with double
+semicolons. And then close that with E sec. So it's case just
+reversed. So again, like I said before, notice that we have two
+options in one line using the pipe symbol, again, and when we
+use the pipe symbol in one of the case statement options, we
+can use it to have multiple values to test for, we define
+our option for help. also define a catch all or default option.
+And this is equal to like the else statement like we saw
+earlier, meaning that if none of the options are equal to the
+input, we will perform a specific action and now we can
+run our scripts and get the results that we expect. Before we get into looping, we
+need to first extend our knowledge about variables, we
+can actually assign multiple values to one variable collected
+in a list. We call these kinds of variable lists arrays. Let's
+see how we can actually create this in the command line. In the
+command line type my first list equals open brackets one, space
+two, space three, space four, space five, close the brackets.
+Take note of how we start the array with open brackets, use a
+space as a separator for each item, and close the array with
+the closing bracket. Now let's see what the output is when we
+try to print this array. Just type in Echo, and then just like
+we would with any other variable, space, dollar sign my
+first list and now we will see that the output is just the
+first element. And this is of course not what we want. To echo
+the entire list, we need to specify it like this echo,
+dollar sign, open curly braces, my first list square brackets,
+apt symbol, closing square brackets, close the curly
+braces, and this will print out everything in the list. But we
+can also define which item we want to print like this echo
+space, dollar sign curly braces, my first list square brackets,
+and then over here we'll just type in zero, which is the
+index, close the square brackets close the curly braces, and this
+will print out the first item in the array because we define the
+index in between the square brackets. And because in bash,
+the first item in the array always has index zero counting
+upwards we will see the first item in the array. But let's say
+we want to do something else with all these items in the
+array. We can do this with a for loop. Now that we have created our
+array, we want to loop over the items in it and do something
+using a for loop. In our example, we will count the
+length of each word in the array by piping the item output using
+echo to the wc command don't Get to specify the minus n flag
+in our echo command, because otherwise it will also count the
+newline characters. type in the command line for
+space, item space in dollar sign curly braces, my first list,
+square brackets at square brackets, curly braces, semi
+colon space, do space, echo space minus n space, dollar sign
+item, space pipe symbol SPACE, wc space minus c semi colon
+space done. Take note of how we write the
+for loop here, we first define the variable item, which will
+represent each item in the array during the loop. Then we define
+the iterable, which is our array. And what shall we
+actually define it in our for loop, we encapsulate it in our
+curly brackets and add the square brackets, add square
+brackets after it to make sure we loop over the entire array.
+Then we follow it up with a semi colon space, then we type in do
+and then we type in what we actually want to perform here.
+So we'll type in do echo minus n. As I said the minus n is just
+a flag for the echo command to ignore all the newline
+characters and then space dollar sign item, because the dollar
+sign item will represent one of the items that we are currently
+looping over space and then the pipe symbol, WC minus c. And
+then we do again semicolon, and then we'd have been done. To understand why we need
+functions in a bash script, we should first consider this. In
+some scenarios, we have a lot of repeated code, we might want to
+do a specific set of commands in a certain order. Or we want to
+run that through a set of if else statements multiple times.
+For these scenarios, we create functions. These functions are
+like little programs within your script that you can run from
+within your script. It makes it so that you can make your code
+reusable very powerful stuff. Because we can save so much time
+and lines of code. Let's write our first function in bash.
+Let's open up a new file called first function that sh i will
+type in the shebang and then a new line we'll type in the name
+of the function and we'll just call this show uptime. And then
+we open and close the brackets. And then we open the curly
+brackets will type in up equals dollar sign open brackets up
+time minus p pipe cut minus C for minus and then to close the
+brackets. We'll type in since equals dollar sign open brackets
+uptime minus s, close the brackets and again, if I'm going
+a little bit too fast for you, you can pause the video and I'm
+gonna go over what we actually did here, I'm going to dissect
+everything we did here in just a second. But then a new line
+again cat and then we'll use the double lesser than symbol elf, I
+will type a new line I will just create something pretty here. A
+few dashes, I will type in this machine has been up for dollar
+sign curly braces up curly braces, it has been running
+since dollar sign curly brackets since curly braces that a new
+line of then we do a new line of dashes. Then we end our
+statement with elf, close the curly brackets and then we just
+type in show uptime. So let's dissect this again. First, we
+define the name of the function followed by open and close
+brackets followed by the curly brackets. To define what our
+function does, we enter all the things that needs to do in
+between the curly brackets. In our case, we will show the
+uptime of the machine. Watch how he catched the output of a
+command into a variable using the dollar sign in brackets
+notation, then we do this again in the next variable. We defined
+a variable in the same way. But we use different flags for the
+uptime command and store that output in the since variable and
+we can now create a nice output using these variables using the
+cat command and the redirection we learned earlier in the course
+we end by closing the curly brackets, and then we call the
+function by just typing it anywhere in the script. As long
+as it's typed under the function it's fine, because we need to
+make sure that the function first is defined. When we define a variable in our
+function, it's available to the entire script by default, this
+might seem okay, but it can actually cause trouble when you
+write bigger scripts. We want to define the variables inside our
+functions as local variables so that they are only available to
+our function and not to the entire script. This way, we will
+avoid accidentally overwriting global variables, which might
+cause issues when we are using functions that share these
+variable names. Let's have a look at what happens when we
+don't use local variables. So let's define our variables named
+up equals Before since equals function,
+and then we'll just print those out before we define the
+function. So we'll just echo up and echo since. And then now we
+will define the show uptime function. Again, we will leave
+it the way it is, and then echo up an echo since, and let's run
+it and in this example, we can see that the variables are
+indeed globally available, which is not what we wanted. We'll see
+also that they are globally available, but we have actually
+overwritten the variables that were defined before the
+function. And then the function was actually reassigning those
+variables because they are not assigned as local variables.
+Let's fix that. So the only thing we need to do to fix it
+really is just add local before we define the variable in our
+function, so instead of just writing up, and since equals the
+commands that we want to use, before the up, we'll just enter
+local space. And then the same goes for since we'll define
+local space. And when we run this, we can now see that our
+variables are available to the scope of our function, but the
+global variable is not overwritten. Just like our entire bash script
+can have a positional argument. So can our function, let's have
+a look at an example. Create a new script called function pass
+argue.sh. And we'll write the shebang. And that will open our
+function with the function name, open the brackets, open the
+curly brackets, and then we'll write echo Hello, dollar sign
+one. And then close the curly
+brackets. And then we'll write the function name space. And
+then whatever you want to write here, we'll write our own name.
+So we can write out whatever set of characters we want. But in
+this case, we wrote our own name, we could even go as far as
+to pass positional arguments of the entire script to the
+position or argument of the function. And of course,
+functions can also take multiple positional arguments. So lots of
+stuff is possible here. Let's open up the previous file.
+Underneath the echo statement, we'll type an if statement. And
+then we'll say if dollar sign curly braces, one comma, comma
+equals and then your user name, which in my case is Herbert to
+close the brackets semicolon, then return zero, else, we will
+return one. And that will close the if statement. Then also over
+here, we'll remove this static name and change it to a
+positional argument one, and that also, if dollar sign
+question mark equals one, then close square brackets,
+semicolon, then echo and then it will write someone unknown
+called the function and then we'll close the if statements or
+write and quit. And let's now try to run this with tests. For
+example. It'll say hello test, but then you'll see that it also
+says that someone unknown requested the function. Aw K is one of the most useful
+tools in the bash arsenal, we use aw K to filter file
+contents, or the output of a command in such a way that we
+can print out the most essential parts and get the output the way
+we like it. So use aw K, we can either filter parts of a file,
+or we can filter parts of a command output by piping that
+output into a Wk let's have a look at how we can filter
+through a simple text file with a Wk we first create a test file
+which contains three words separated by a space once we
+created that file, we can put a Wk to work type in a Wk single
+quote, open the curly brackets print dollar sign one, close
+curly brackets, single quotes space the name of our test file,
+we will see that the dollar sign one acts as a placeholder. For
+the first item in the text file. We could also get the second
+word that comes after the first word always separated by space
+by typing in a Wk single quotes curly braces, print dollar sign
+to close curly braces single quote and again our test file
+now that we get the idea of aw K in its default mode, which is
+using a space character as a separator, we can move on to
+changing it into other characters such as a car, let's
+create a CSV file and add three values in it again separated by
+a comma this time now we can use a Wk again to split the values
+in the CSV file by adding the minus capital F flag and
+specifying the split character afterwards like this aw k minus
+capital F comma space open the single quotes open the curly
+braces print dollar sign one close the curly braces single
+quote test CSV dot CSV and now we will see that the output is
+also the same as in our previous examples, but we will see that
+aw K actually used the comma as a separator character. And last
+but not least, we can also pipe commands into a Wk like so type
+in Echo just get this word colon hello and then we pipe into a Wk
+I will print out number five, because
+this is the fifth word separated by a space and then we'll see
+that the word hello will be printed out. Or we can also
+split this at the colon symbol like so. Echo, just get this
+word colon Hello, pipe into a WK. And then we specify the
+minus f, we follow it up with a colon and then print dollar sign
+to and that will still have to cut out the first character
+which is a space and that will get the same results as well.
+And that's just the beginning. Of course, there's a lot more
+possible with a WK. So if you want to practice you can try
+using it more often in your scripts. It really pays off to
+know this well because you'll do a lot of output filtering and
+reformatting in bash. There will come a time where you
+want to change certain values in text files, and that's where sed
+or set comes in. Set is a command line tool that will
+allow you to modify values in a txt file using regular
+expressions. Let's have a look at an example on how to use as
+Edie are set to replace values in a text file. Create a text
+file called Set test dot txt and let's write down some text here.
+Now we will replace the word fly with grasshopper just for
+demonstration purposes. So we type in set single quotes s
+forward slash fly forward slash grasshopper forward slash G
+single quotes and then the name of our txt file, which is set
+test dot txt. Now the structure of this command is a little bit
+daunting, but let's break it down. First, we start off with
+the set command, we open the single quotes and start our
+regular expression. First we enter the mode we want to use,
+which is as for substitute, meaning we want to substitute
+the next word behind the forward slash with the word after the
+second forward slash, which is the first one is fly. And then
+the second one is grasshopper that after the last, we provide
+the G which means that we want to do this globally. G stands
+for globally and globally means that we want to do this across
+the entire text file, which means that we want to change
+every occurrence, we close it with another single quote and we
+put the text file we want to change behind the entire
+command. Let's say we want to keep the original in a backup
+file. We can do this by adding the minus II flag to the command
+like so. So we just do the same thing we just do set minus i dot
+original and then we enter the exact same command we just
+provided earlier, we can see here that we use the minus II
+flag, but we don't put a space behind it. Instead, we write the
+entire suffix behind the minus II flag. This will create a
+backup file which contains the original content of the file we
+just changed with the set command but the original file
+will have the changes we desired just like with aw k this is a
+basic introduction to set and there will be so much more to it
+but as with all things in it, you need to discover this by
+yourself by trying it out as much as you can. Well this
+brings us to the end of the course

@@ -1,0 +1,243 @@
+Welcome back, aspiring professional 
+Python devs to mCoding, I'm James Murphy. Let's learn how to set up logging in 
+your python application, the modern way. That means we're going to learn to stop 
+doing this, and start doing this instead. As always with so-called "best 
+practices" these are general guidelines that work for most use cases. However, you know what's best for 
+your code way better than I do, so if you have a good reason, 
+then do what you know is right. Don't blindly follow this advice 
+if it doesn't work for you. With that said, let's get going 
+... right after I sponsor myself. At mCoding, we do code reviews, 
+consulting, and professional training. Do you have a problem with your code? Worried about your architecture? Or do you just need some extra dev hours? Why not make me part of your team? Anyway let's get back to logging. The built-in logging package is very old 
+and full of stuff that you shouldn't use. It doesn't follow PEP8, the docs are a mess, and many tutorials are outdated or quite frankly 
+written by people who obviously don't use it. But for all its quirks, the 
+built-in logging package is   the de-facto standard for logging in Python. It doesn't matter if you're using a cloud 
+provider or just developing a local application, the standard is the built-in logging package. But do you really even need logging at all? Hey man, you came to me. If your app doesn't need logging, that's up to 
+you, I'm just here to show you what's possible. All right, let's see how to get started. You might think you just import logging, 
+make a logger, set it up with a basic config, and then get to logging with your messages. When you run the code, based off the log level 
+you set, you see those level messages and worse. And I wouldn't blame you if 
+you've been doing it this way. In the most basic cases this is totally fine, 
+but I don't really recommend doing it this way. Why? Well, if you care to do logging 
+at all you probably want to log to at least two different places, 
+like to stdout and also to a file. Or you want to log higher priority things 
+like errors and exceptions differently, maybe you want to send an email if 
+there's an exception thrown in prod? You can manually make handlers and 
+filters and add them to your loggers, but, trust me, just don't do it that way. Instead, use dictConfig. For some reason dictConfig is hidden 
+away in this logging.config submodule, and not so much as mentioned 
+in the main logging docs. As the name suggests, this lets you 
+configure logging via a dictionary that explicitly lists all of the necessary 
+components of your logging setup, namely the filters, formatters, 
+handlers, and loggers. The basic config hides these objects 
+and their relationships from you, which makes for a really slick 
+one-liner in the most basic case, but for more useful logging setups I find 
+it's much clearer to list them explicitly. It can get really confusing if you don't have a   good mental model for what 
+these things actually do. So here's the one picture to keep in 
+mind to see how it all fits together. Loggers are the things that 
+you actually use in your code. They have a ".info" and you can 
+call logger.info to log a message, logger.debug to log a debug message,   logger.exception to log the 
+in-flight exception, etc. That creates a log record,   which is an object that contains all 
+kinds of useful contextual information. Things like the message and 
+severity, the current time, the current thread or async task, the 
+location in the source code, and so on. Every logger can set a level to drop 
+all messages below a certain severity, and optionally some filters to drop 
+or alter messages along the way. So you could do something like drop all 
+messages that begin with "some annoying string." Or you could do something more sophisticated   like sensor private user data that 
+isn't supposed to appear in logs. The logger then passes these log records 
+off to each of their handlers one at a time. Handlers tell you how and where 
+to log a record, like to stdout,   to a file. over email. or 
+to a commercial log service. Each handler receives the log record and, 
+just like for loggers, the handler has a level and some filters that allow it to drop 
+or alter the message along the way. if a record is dropped by a handler, it 
+still passes on to the rest of the handlers. But if it was dropped by the logger 
+itself, then it's dropped for good. Assuming the message passes 
+through the levels and filters, when it comes time for the handler to actually 
+write the log message, it needs to write text. But currently this is a Python object. 
+So each handler has a formatter that it uses to convert the log record 
+object into a string to be sent out. The formatter is what lets you customize 
+what an individual message looks like. Like is it the log level and then the message? 
+Or level, then timestamp, then message? Or maybe you write JSON, or maybe 
+you write some other format. Formatters are typically where 
+you see the most customization because it's the formatter 
+that selects which data from   the log record to actually include in the message and that depends a lot on your specific use 
+case and what you want to see in your logs. And this is almost the complete picture. Except this is the picture for the root logger, 
+the root as in the root of the tree of loggers. Loggers are accessed and created by name, and if you split the name by dots then 
+you end up with a tree of loggers. So the A.X logger is a child of the A 
+logger, which is a child of the root. By default, once a child's done handling a log 
+record, it passes that record up to its parent. So if this log record was generated 
+down here in the A.X logger, all of A.X's handlers would run, 
+then it would propagate up to A,   and all of A's handlers would run, then it would propagate up to the root 
+and all of the roots handlers would run. This is done to make it easier for users 
+to disable messages from whole subsystems just by disabling certain loggers. Once again, if a record is dropped by 
+a handler it will continue moving on, to include propagating up to the parent. But if it's dropped by a logger, 
+then it stops and doesn't propagate. But slow down there, this is way more 
+flexibility than you would usually need. Having all these handlers and filters 
+and propagation at different levels is unnecessarily complex for most use cases. And it often leads to subtly broken configs. So here's what I recommend. See all these non-root handlers? Delete them. Unless you've got a good reason, 
+put all handlers on the root logger. This is simpler, but also having all 
+handlers on the root logger ensures that any messages generated by third-party 
+libraries get logged and formatted the same way as messages 
+generated by your own application. Filters? Same deal. There's a decent chance you 
+don't need any filters at all,   but if you do put them all on the root logger or their handlers. Leave propagation turned on, which is the default,   so that all messages propagate 
+up to the root logger. However, don't use the root logger in your code. If you use any of the top-level logging functions 
+like logging.info, this uses is the root logger. So don't use any of those functions. Make sure to use your own logger, which you get by   using logging.getLogger and passing in 
+the name of the logger that you want. This will create the logger first 
+if it doesn't already exist, then you can use your logger.info 
+instead of logging.info. And remember, your logger 
+doesn't have any handlers on it. We're depending on propagation to 
+send all events up to the root logger and have the root logger 
+actually handle the events. If you have a small- to medium-sized application, 
+a single non-root logger is all you need. If you have a very large application,   then you should make one non-root logger for 
+each major subcomponent of your application. You definitely don't need a logger for every file. That'd be a waste because these are globals 
+that live for the entire life of the program. With that all in mind, let's get back   to configuring logging for a few 
+common setups using dictConfig. As a baseline let's just have a simple 
+config that logs everything to stdout. If you're ever confused about the config,   draw it out like this and then use 
+the picture to fill in the config. This "version" is required 
+and the only valid value is 1. This is so that they can change everything 
+in the future without breaking old code. "disable_existing_loggers" does what it says,   it disables anything that's not 
+explicitly listed in this config. I'm going to go ahead and set this to false so 
+that I can get log messages from third-party code. No filters in this configuration, 
+so let's just delete that. Next define a formatter named "simple" 
+and give it a simple format string. We didn't specify what class this formatter is,   so by default it just uses the 
+built-in logging.Formatter. It accepts the format string like this, using 
+this kind of weird printf-style format string. Yes it's kind of weird but just deal with it or,   foreshadowing, wait a minute 
+and we'll see a better way. If you want to customize your own 
+format you can find a list of all   the available variables in 
+the logging documentation. Next we need to define the single stdout handler, 
+so we create this single handler named "stdout" and set our "simple" formatter as 
+the formatter for this handler. In order to get it to actually 
+log to stdout, we set its class to the built-in logging stream handler 
+with a stream of sys.stdout. The "ext://" slash here means "external",   as in this is a variable that's 
+defined outside of this config. And voila! In just 16 lines we've configured 
+what the basic config did in one line. I know, I know, but keep in mind this more of   verbose style is going to be a lot 
+clearer when we have more going on. So stick with me. Despite the fact that we're using dictConfig, that doesn't mean that we need to 
+keep the logging configuration as   a literal dictionary in our Python source. Nothing wrong with that, 
+but many find it convenient to keep the logging config in a 
+separate file in JSON or YAML format. Personally I prefer to keep my config in JSON, so 
+go ahead and create a JSON version of your config, then load that JSON when 
+when your application starts. If you wanted to use YAML instead,   it would look basically the same except 
+of course you would have a YAML config and you would "import yaml" and do 
+a YAML load instead of a JSON load. Let's bring those side by side just 
+so you can see the two configs. Obviously YAML is a lot more condensed, but I 
+find it to be a lot more error-prone as well. And also there's no YAML parser built into Python, whereas there is a built-in JSON parser. So if you wanted to, you would have 
+to pull that in as a dependency. "pyyaml" is a popular choice. Keeping the log config in a separate 
+file also allows you to let your users   adjust the logging config to their preference. You know, if you trust your 
+users to do that kind of thing. Second setup. Let's modify the 
+config so that errors go to stderr, and then all logs go to a file. Change the "stdout" handler to "stderr" 
+and set its level to "WARNING". Then, create a new handler and set 
+its class to a RotatingFileHandler. A rotating file handler keeps appending logs 
+to a file until it reaches a certain size, in this case 10 kilobytes. After it reaches 10 kilobytes, it 
+creates a backup and starts a new file. After three backups it starts 
+deleting the oldest one. 10 kilobytes is a pretty small limit, this is 
+just so that you can see the rollover happen. You probably want to pick a few megabytes. After running the script a bunch of 
+times, you can see it eventually created this "my_app.log.1" and then 
+started using "my_app.log" again. We're still using the "simple" formatter here. But since we're saving to a log file, 
+why don't we include some extra details? We accomplish that by adding this new "detailed"   formatter and setting it as the 
+formatter for the "file" handler. We include much more information in the format   string, and we're also showing 
+off the "datefmt" format here, which allows us to customize 
+how dates are printed. Pro tip: use an ISO-8601-compliant format 
+and include the timezone. Trust me. This way our log contains a lot 
+more useful contextual information. For a lot of applications, 
+this is a great place to stop. But, if you really care about 
+the quality of your log data,   then I really suggest making one crucial change. Take a look at this log file. Glancing over it I can visually distinguish 
+different messages from each other, but notice that we have tracebacks in here. And what if log messages had newlines in them? If I wanted to parse this programmatically 
+I'd need to be able to parse back out all of the data that I put into it. But it's kind of just in free-form text with 
+newlines that could be anywhere at this point. That's kind of intractable. The solution? Store persistent 
+logs in JSON format,   so that they can be parsed easily later on. This is a change in how to convert 
+a log record into a string, so that's the job of the formatter, 
+we need a JSON formatter. But oh wait, there's no 
+built-in logging JSON formatter. There are a few you can pip install, 
+but let's just write our own. Supposing we did, you'd think you'd 
+be able to just set the "class" key   here and then pass in whatever arguments here, and those will be keyword 
+arguments to the constructor. That's what's happening here 
+with the handler, right? Uhh, nope. You can use your own class 
+here using the "class" keyword, but if you do then all of the keys are 
+hardcoded to be the ones that the built-in uses/ So I could use "format" and "datefmt", 
+but I couldn't create my own "fmt_keys". Why is it like this way? 
+Great question! Moving on. Change "class" to "()" and then 
+it will do what you actually want: call this and pass this as a keyword argument. You'd have to do the same thing 
+anywhere else in the config, like if I made my own custom handler that didn't 
+have the same interface as the built-in one. Okay well with that weird road bump 
+out of the way, let's continue. So we're going to pass in these format keys, which is going to be a dictionary where the key is 
+the key that I want to appear in the log message, and the value here, like "levelname",   is the variable that we're going 
+to look up from the log record. Okay so let's go ahead and write this class. We're in a new file here and we just 
+inherit from the built-in loging Formatter. Nothing special in the init, we just store 
+the format keys that we get from the config. Then we need to define this "format" function. This is a thing that takes the 
+record and goes to a string. I'm using "@override" here to indicate that 
+we're overriding something from the parent class. It's not strictly necessary, but it's a 
+good habit to get into marking these things. All we do is extract out the record data into a   dictionary and then use the "json" 
+module to dump that to a string. As far as actually extracting those 
+fields goes, it's pretty simple. Regardless of the config, I chose to include the   message and a timestamp in 
+ISO format in UTC timezone. We pull in any exception data if 
+it's present using some parent   methods in order to extract things out nicely. And for the rest of the keys we just grab 
+them from the attributes of the record. It's pretty straightforward and you 
+could probably do whatever you want here. And donzo! Update the config to use the 
+new JSON formatter and we're good to go. Check our log file and we 
+see nicely formatted JSON. A slight warning though, 
+this file is not valid JSON. Each line is valid JSON. This format is called JSON Lines and 
+the common file extension is ".jsonl". So to parse it you just read the file 
+line by line and parse each line as JSON. And double pro-tip: now 
+that we're outputting JSON, it's actually really easy to add 
+lots of extra contextual information. To do this we can just use the "extra" 
+argument in one of our log calls. Give it a dictionary of extra information and 
+Python will stuff that onto the log record. Then just update your formatter to pull in those   extra attributes and now any 
+extras will appear in our JSON. Here's the {"x": "hello"}. If you're getting too many logs and you'd 
+like finer control over which ones to drop, then you might need a filter. The process of creating a custom filter is 
+very similar to creating a custom formatter. Inherit from the built-in Filter, then define 
+your own override of the "filter" function. Given a record, you return a bool to indicate 
+whether or not that record should be processed. So this non-error filter does kind of the 
+opposite of setting the level to "INFO". Setting the level to "INFO" would mean 
+that you would only keep messages that   were "INFO", "WARNING", "ERROR", "CRITICAL", but setting this non-error filter would 
+give you "DEBUG" and "INFO" instead. You can also alter the record here,   like if you wanted to censor private 
+data or return an altered copy. I'm not going to deal with filters for the rest 
+of the video, but here's a homework exercise. Using this non-error filter, create a logging 
+config that shows normal messages to stdout, but error messages to stderr. You're going to need the 
+filter to prevent duplicates. Okay okay, surely there are no more glaring 
+flaws with this logging setup, right? At the risk of using a forbidden word 
+in Python let's talk about performance. By its very nature, calling a 
+log function results in I/O. If a user makes a request to my web app 
+and that results in 10 log messages, I don't want to add 10 round-trips worth of time 
+to my logging service before I respond to my user. But currently that's what will happen because 
+all logging calls are synchronous and blocking. The solution? Use a QueueHandler 
+to log off the main thread. Collecting log data isn't the slow part. The slow part is sending 
+it wherever it needs to go. A queue handler stores your log 
+records in a queue without blocking, while an associated queue 
+listener accepts those messages and passes them off to other 
+handlers in another thread. In order to configure this, create 
+a new queue handler in your config. The class is "logging.handlers.QueueHandler" 
+and then it accepts another list of handlers. These are the handlers that it dispatches to,   so basically take the handlers that 
+you had on the root handler before, put them here and then change the queue 
+handler to be your only handler on the root. This "respect_handler_level" for 
+for some reason is by default false, which results in the behavior of sending every 
+message to every handler regardless of log level, so yeah, that's probably not what we want. I'm going to set this to true 
+so that it does what you expect. There's one more thing we need to 
+handle over here in the main file, which is that because the queue 
+handler is starting a thread, that's not something that's 
+going to happen automatically. When we set up our logging we need 
+to manually start that thread. We accomplish this by getting the 
+queue handler by name and then if it exists we start its listener's thread. We also register an atexit callback in 
+order to call the listener's stop method and shut it down gracefully when the program ends. Alternatively, if you want to keep 
+all the work inside the config, you could also subclass the queue handler 
+class and make it do this stuff in its init. And success! We finally have a high quality, 
+parsable, multi-destination, non-blocking logging setup 
+for our Python application. Feels good, doesn't it? But notice I said logging for your 
+"application" not your "library". Application authors know who their users are and 
+know what kind of logs that they want to see. Whereas if you're writing library code,   you don't know who your end user is and 
+you don't know what kind of logs they want. Conclusion: for library code, 
+don't configure logging. You can still use logging, create loggers, 
+log messages and other important events. Just don't configure it with 
+dictConfig or any other config. Let applications do the configuring. If a user doesn't configure logging, 
+the default and expected behavior is that warnings and above will be printed to stderr. If a user of your library does configure logging, then don't interfere with what 
+they want by adding handlers   formatters or other things 
+that they're not aware of. Finally, do you remember log4j? It's an extremely popular logging library for 
+Java that had a 0-day vulnerability wreak havoc and cause absolute pandemonium in the business 
+world as thousands of large products and services with millions or billions of users 
+instantly became vulnerable to an easy-to-do remote arbitrary code execution vulnerability. At the heart of the vulnerability was 
+a combination of logging user input, combined with a plugin that allowed 
+loading remote data as Java object data. Anyway here's Python's "makeLogRecord" function 
+that can be used to create log records manually. For example "from a pickled 
+event received over the wire". I'm not saying this is actively vulnerable. but in-case "logging4p" 
+becomes a thing ... called it. Thanks for watching, and 
+remember my company is mCoding. So if you're still not satisfied with your 
+logging or other project setup, maybe we can help. Don't be afraid to reach out. Did you know that this entire channel 
+is funded completely by donations? So huge thanks to everyone on patreon and 
+direct contributors for supporting the channel. If you'd like to support the channel 
+go to patreon.com/mcoding and sign up. Don't forget to subscribe and slap that 
+like button an odd number of times. See you in the next one.
